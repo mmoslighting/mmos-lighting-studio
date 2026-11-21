@@ -5,3 +5,4 @@
 @media(max-width:600px){.topbar{padding:0 12px;height:58px}.local-badge{display:none}.top-actions{gap:6px}.top-actions button{padding:8px;font-size:10px}.shell{display:flex;flex-direction:column}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:16px;min-height:unset}.upload{margin:14px 0}.mask-list{grid-template-columns:1fr 1fr}.mask-item{padding:8px}.note,.sidebar-footer{display:none}.workspace{min-height:500px}.inspector{padding:17px}.photo-wrap canvas{max-height:55vh}.bottom-bar>span{display:none}}
 
 .geometry-panel{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}.geometry-panel[hidden]{display:none}.geometry-help{font-size:9px;line-height:1.5;color:#7f838c;margin:8px 0 0}.geometry-panel .control{margin-bottom:17px}
+\n.compare-slider{width:82px;accent-color:#b8d477;height:14px;cursor:pointer}.compare-slider:disabled{opacity:.35;cursor:not-allowed}\n
