@@ -23,10 +23,12 @@ python3 -m http.server 8080
 Then open http://localhost:8080
 
 ## Deploy with GitHub Pages
-1. Open repository Settings → Pages.
-2. Under Build and deployment, choose **Deploy from a branch**.
-3. Select branch `main` and folder `/(root)`.
-4. Save and wait for the Pages deployment to finish.
+A GitHub Actions workflow is included at `.github/workflows/pages.yml`.
+1. Open repository **Settings → Pages**.
+2. Under **Build and deployment → Source**, select **GitHub Actions**.
+3. Open the **Actions** tab and check the workflow named "Deploy MMOS Mask Lighting Studio to GitHub Pages".
+4. When the run finishes successfully, open **Settings → Pages** to see the published website URL.
+5. Every new commit to `main` triggers a new deployment.
 
 ## Roadmap
 - Real subject/background segmentation and editable mask refinement.
