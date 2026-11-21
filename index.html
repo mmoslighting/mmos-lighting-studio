@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#101114" />
+  <title>MMOS — Mask Lighting Studio</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">M</span><span>MMOS <small>MASK LIGHTING STUDIO</small></span></a>
+    <div class="top-actions"><span class="local-badge">● LOCAL EDITOR</span><button id="resetAll" class="ghost">Reset</button><button id="exportBtn" class="primary">Export JPEG ↗</button></div>
+  </header>
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="section-head"><div><p class="eyebrow">WORKSPACE</p><h1>Photo Editor</h1></div><span class="version">V1.0</span></div>
+      <label class="upload" for="fileInput"><span class="upload-icon">＋</span><strong>Upload photograph</strong><small>JPG, PNG, WebP · processed on this device</small><input id="fileInput" type="file" accept="image/*" /></label>
+      <div class="panel-title"><span>MASK COLLECTION</span><span class="count">05</span></div>
+      <nav id="maskList" class="mask-list"></nav>
+      <div class="note"><strong>WORKFLOW NOTE</strong><p>Mask adjustments are simulated as editable tonal overlays in this browser build. No face or object regeneration is performed.</p></div>
+      <div class="sidebar-footer"><span>MMOS CREATIVE TOOLS</span><span>BUILD 001</span></div>
+    </aside>
+    <section class="workspace">
+      <div class="canvas-toolbar">
+        <div><p class="eyebrow">CANVAS / PREVIEW</p><strong id="photoName">No photograph loaded</strong></div>
+        <div class="view-actions"><button id="compareBtn" class="tool active">Before / After</button><button id="fitBtn" class="tool">Fit</button></div>
+      </div>
+      <div class="stage" id="stage">
+        <div class="empty-state" id="emptyState"><div class="empty-symbol">✳</div><h2>Your image, your light.</h2><p>Upload a photograph to begin shaping the light.</p><label for="fileInput" class="primary upload-cta">Choose photograph</label></div>
+        <div class="photo-wrap" id="photoWrap" hidden>
+          <canvas id="photoCanvas"></canvas>
+          <div class="compare-line" id="compareLine"></div>
+          <span class="compare-label before-label">ORIGINAL</span><span class="compare-label after-label">EDITED</span>
+        </div>
+      </div>
+      <div class="bottom-bar"><div><span class="status-dot"></span><span id="statusText">Waiting for image</span></div><span>NON-DESTRUCTIVE PREVIEW · ORIGINAL FILE UNCHANGED</span></div>
+    </section>
+    <aside class="inspector">
+      <div class="inspector-head"><div><p class="eyebrow">ADJUSTMENT PANEL</p><h2 id="activeMaskTitle">Model</h2></div><button id="toggleMask" class="toggle on" title="Toggle mask"><span></span></button></div>
+      <p id="maskDescription" class="mask-desc">Lift the subject exposure and add controlled contrast.</p>
+      <div class="control-group">
+        <div class="group-label">LIGHT & TONE <span>01</span></div>
+        <div id="controls"></div>
+      </div>
+      <div class="inspector-bottom"><button id="resetMask" class="wide-ghost">Reset selected mask</button><p>Adjustments are applied as a preview. Export creates a new JPEG file.</p></div>
+    </aside>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
