@@ -129,7 +129,8 @@ $("#fileInput").addEventListener("change",e=>loadImage(e.target.files[0]));
 $("#toggleMask").onclick=()=>{const s=getState(active);s.enabled=!s.enabled;renderInspector();renderList();scheduleDraw();};
 $("#resetMask").onclick=resetSelected;
 $("#resetAll").onclick=()=>{state=maskDefs.map(m=>({id:m.id,enabled:true,values:{...m.values},geometry:m.id==="model"?{...defaultGeometry}:null}));renderList();renderInspector();scheduleDraw();};
-$("#compareBtn").onclick=()=>{showCompare=!showCompare;$("#compareBtn").classList.toggle("active",showCompare);scheduleDraw();};
+$("#compareBtn").onclick=()=>{showCompare=!showCompare;$("#compareBtn").classList.toggle("active",showCompare);$("#compareSlider").disabled=!showCompare;scheduleDraw();};
+$("#compareSlider").addEventListener("input",e=>{compare=Number(e.target.value);scheduleDraw();});
 $("#fitBtn").onclick=()=>{$("#photoWrap").style.maxWidth="94%";$("#photoWrap").style.maxHeight="92%";};
 $("#exportBtn").onclick=()=>{
  if(!imageBitmap){alert("Upload foto terlebih dahulu.");return;}
