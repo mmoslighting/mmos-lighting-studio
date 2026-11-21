@@ -11,7 +11,15 @@ A lightweight browser-based photo lighting workspace inspired by the five-mask w
 - Runs locally in the browser without uploading photographs to a server.
 
 ## Important implementation note
-This first build uses Canvas overlays and spatial gradients. It does **not** perform semantic subject segmentation, automatic background selection, true edge-aware rim-light masking, or Lightroom-grade RAW processing. "Model" adjustments currently approximate global tonal lift; "Background" approximates edge darkening. It never claims to identify or edit faces independently. A later phase can add a segmentation model and region-specific pixel processing.
+The current build performs pixel-level tonal processing in the browser using spatially weighted masks:
+- **Model:** adjustable soft ellipse with center X/Y, width, height, and feather controls.
+- **Background:** inverse of the Model ellipse.
+- **Linear Gradient:** diagonal feathered gradient.
+- **Rimlight:** soft elliptical edge band around the Model mask.
+- **Sunlight:** warm radial gradient from the upper-left.
+- Exposure, contrast, saturation, and temperature values are combined per pixel and exported into a new JPEG.
+
+This is a geometric-mask approximation, not AI subject segmentation. It does **not** automatically identify people, separate hair/clothing edges, or create a true edge-aware rim light. It also does not process RAW files or generate Lightroom DNG camera profiles. A later version can add semantic segmentation, brush/erase refinement, and a Photoshop/Lightroom extension.
 
 ## Run
 No build tools or dependencies are required. Open `index.html` in a modern browser, or serve the folder:
