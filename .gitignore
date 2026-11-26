@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+uploads/
+outputs/
+.DS_Store
+
+# Protect all environment files
+.env*
+!.env.example
+
+src/*.bak

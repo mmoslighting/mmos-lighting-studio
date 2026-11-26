@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171717"><title>MMOS V4 — Hybrid Lighting Engine</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#101010;color:#f5f1e9}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#343026 0,transparent 35%),#101010;min-height:100vh}
+main{max-width:1100px;margin:auto;padding:30px 20px 70px}.brand{letter-spacing:.22em;color:#d6b77b;font-size:12px}
+h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(38px,7vw,66px);margin:12px 0}.sub{color:#bdb6aa;line-height:1.6}
+.panel{background:#1b1b1b;border:1px solid #38342c;border-radius:18px;padding:22px;margin-top:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+button,.preset{border:1px solid #514a3d;border-radius:12px;background:#24231f;color:#eee7da;padding:13px;cursor:pointer;text-align:left}
+.preset.active,button.primary{background:#b99a62;color:#17130d;border-color:#d5b77d}.preset small{display:block;color:inherit;opacity:.7;margin-top:5px}
+label{display:block;color:#c9c0b2;margin:15px 0 7px;font-size:13px}
+select,input[type=file],input[type=color]{width:100%;padding:12px;background:#24231f;color:#eee;border:1px solid #514a3d;border-radius:10px}
+input[type=range]{width:100%;accent-color:#c6a46b}input[type=checkbox]{accent-color:#c6a46b}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.control{background:#22211e;border:1px solid #39352d;border-radius:12px;padding:12px}
+.control label{margin:0 0 8px}.value{float:right;color:#d9bd89;font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button{font:inherit}button.primary{font-weight:700;text-align:center}
+#status{color:#d7bd8b;margin-top:14px;white-space:pre-wrap;line-height:1.5}
+.preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.preview figure{margin:0}.preview img{width:100%;max-height:620px;object-fit:contain;background:#111;border-radius:12px}.preview figcaption{font-size:12px;color:#bdb6aa;margin:7px 0}
+.fine{font-size:12px;color:#a49c90;line-height:1.6}.badge{display:inline-block;border:1px solid #62543d;color:#e2c58e;padding:5px 9px;border-radius:99px;font-size:11px;margin-top:8px}
+a{color:#e2c58e}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row>*{flex:1}
+@media(max-width:650px){.preview{grid-template-columns:1fr}.panel{padding:16px}}
+</style></head>
+<body><main>
+<div class="brand">MMOS · MARRIED OURSTORIES</div>
+<h1>Hybrid AI<br>Lighting Engine</h1>
+<p class="sub">Manual lighting controls dan AI workflow bridge dalam satu studio. Mulai dengan pemrosesan lokal; hubungkan ComfyUI dan workflow relighting yang kompatibel untuk AI subject-aware.</p>
+<div class="badge" id="aiBadge">Memeriksa koneksi AI…</div>
+<section class="panel">
+<h2>01 / Lighting preset</h2><div class="grid" id="presets"></div>
+<div class="controls" style="margin-top:18px">
+<div class="control"><label for="intensity">Preset intensity</label><select id="intensity"><option value="subtle">Subtle</option><option value="medium" selected>Medium</option><option value="strong">Strong</option></select></div>
+<div class="control"><label for="lightDirection">Key light direction</label><select id="lightDirection"><option value="top-left">Top left / 45°</option><option value="top">Top</option><option value="top-right">Top right / 45°</option><option value="left">Left</option><option value="center">Front / center</option><option value="right">Right</option><option value="bottom-left">Bottom left</option><option value="bottom">Bottom</option><option value="bottom-right">Bottom right</option></select></div>
+<div class="control"><label for="lightColor">Light color</label><input id="lightColor" type="color" value="#fff0dc"></div>
+<div class="control"><label for="lightPower">Light power <span class="value" id="lightPowerVal">35%</span></label><input id="lightPower" type="range" min="0" max="100" value="35"></div>
+<div class="control"><label for="softness">Light softness <span class="value" id="softnessVal">70%</span></label><input id="softness" type="range" min="0" max="100" value="70"></div>
+<div class="control"><label for="exposure">Exposure <span class="value" id="exposureVal">0.00 EV</span></label><input id="exposure" type="range" min="-1" max="1" step=".05" value="0"></div>
+<div class="control"><label for="contrast">Contrast <span class="value" id="contrastVal">0</span></label><input id="contrast" type="range" min="-50" max="50" value="0"></div>
+<div class="control"><label for="saturation">Saturation <span class="value" id="saturationVal">0</span></label><input id="saturation" type="range" min="-50" max="50" value="0"></div>
+<div class="control"><label for="warmth">Warmth <span class="value" id="warmthVal">0</span></label><input id="warmth" type="range" min="-30" max="30" value="0"></div>
+</div>
+<label for="photo">02 / Original photo (JPG, PNG, WEBP)</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp">
+<div class="actions"><button class="primary" id="grade">Apply Manual Lighting</button><button id="prompt">Build AI Relighting Prompt</button></div>
+<div id="status" role="status"></div><div id="result"></div>
+</section>
+<section class="panel">
+<h2>02 / Hybrid AI connection</h2>
+<p class="sub">AI mode memerlukan ComfyUI yang berjalan dan workflow relighting yang sesuai. Status ini memeriksa server ComfyUI; belum mengklaim workflow AI siap sebelum model dan mapping workflow dikonfigurasi.</p>
+<div id="aiDetail" class="fine">Memeriksa status…</div>
+</section>
+<p class="fine">Catatan akurasi: Manual Lighting menerapkan global color grade dan wash cahaya arah luas. Efek ini tidak memahami bentuk wajah atau memisahkan subjek dari latar. AI relighting yang benar-benar subject-aware memerlukan model/workflow eksternal, GPU/hosting, dan pengujian preservation. Selalu periksa hasil sebelum digunakan untuk klien.</p>
+</main>
+<script>
+const list=[
+["direct_flash","Direct Flash Editorial"],["film_flash","Film Flash"],["golden_hour","Golden Hour"],["softbox","Softbox Studio"],
+["moody_low_key","Moody Low-Key"],["hard_sun","Hard Sun Editorial"],["neon_gel","Neon Gel"],["backlit_rim","Backlit Rim"]];
+let selected="direct_flash";const wrap=document.querySelector("#presets");
+list.forEach(([id,name])=>{const b=document.createElement("button");b.className="preset"+(id===selected?" active":"");b.innerHTML=name+"<small>MMOS V4 preset</small>";b.onclick=()=>{selected=id;document.querySelectorAll(".preset").forEach(x=>x.classList.remove("active"));b.classList.add("active")};wrap.append(b)});
+const $=id=>document.getElementById(id), status=$("status"),result=$("result");
+const sliders=["lightPower","softness","exposure","contrast","saturation","warmth"];
+const formats={lightPower:v=>v+"%",softness:v=>v+"%",exposure:v=>Number(v).toFixed(2)+" EV",contrast:v=>v,saturation:v=>v,warmth:v=>v};
+sliders.forEach(id=>$(id).addEventListener("input",()=>$(id+"Val").textContent=formats[id]($(id).value)));
+$("grade").onclick=async()=>{
+ const f=$("photo").files[0];if(!f){status.textContent="Pilih foto terlebih dahulu.";return}
+ const data=new FormData();data.append("photo",f);
+ ["intensity","lightDirection","lightColor","lightPower","softness","exposure","contrast","saturation","warmth"].forEach(k=>data.append(k,$(k).value));
+ data.append("preset",selected);
+ status.textContent="Memproses Manual Lighting Engine…";result.innerHTML="";
+ try{const r=await fetch("/api/grade",{method:"POST",body:data});const j=await r.json();if(!r.ok)throw new Error(j.error||"Gagal");
+ status.textContent=j.note;
+ const box=document.createElement("div");box.className="preview";
+ const before=document.createElement("figure"),after=document.createElement("figure");
+ const original=document.createElement("img");original.src=URL.createObjectURL(f);original.alt="Foto asli";
+ const edited=document.createElement("img");edited.src=j.output;edited.alt="Hasil MMOS V4";
+ const cap1=document.createElement("figcaption");cap1.textContent="ORIGINAL";
+ const cap2=document.createElement("figcaption");cap2.textContent=`MMOS V4 · ${j.width} × ${j.height}`;
+ before.append(original,cap1);after.append(edited,cap2);box.append(before,after);result.append(box);
+ const a=document.createElement("a");a.href=j.output;a.download="mmos-v4-result.jpg";a.textContent="Unduh hasil JPG resolusi penuh";result.append(document.createElement("p"),a);
+ }catch(e){status.textContent=e.message}
+};
+$("prompt").onclick=async()=>{
+ const payload={preset:selected,intensity:$("intensity").value,direction:$("lightDirection").value};
+ const r=await fetch("/api/recipe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+ const j=await r.json();status.textContent=j.prompt;
+};
+async function checkAI(){try{const r=await fetch("/api/ai-status");const j=await r.json();$("aiBadge").textContent=j.connected?"AI SERVER CONNECTED":"AI NOT CONFIGURED · MANUAL MODE READY";$("aiDetail").textContent=j.message}catch{$("aiBadge").textContent="AI STATUS UNAVAILABLE";$("aiDetail").textContent="Tidak dapat membaca status AI."}}
+checkAI();
+</script></body></html>
